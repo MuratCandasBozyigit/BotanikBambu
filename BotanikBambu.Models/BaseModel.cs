@@ -1,9 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace BotanikBambu.Models
 {
@@ -18,5 +13,18 @@ namespace BotanikBambu.Models
         public DateTime? DateDeleted { get; set; }
         public int? OwnerId { get; set; }
         public int? ModifierId { get; set; }
+
+        public void MarkAsDeleted()
+        {
+            IsDeleted = true;
+            DateDeleted = DateTime.Now;
+        }
+
+       
+        public void MarkAsUpdated(int? modifierId = null)
+        {
+            DateUpdated = DateTime.Now;
+            ModifierId = modifierId;
+        }
     }
 }

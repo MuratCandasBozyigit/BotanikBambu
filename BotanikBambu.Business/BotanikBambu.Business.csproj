@@ -6,4 +6,27 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Configuration\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="jQuery" Version="3.7.1" />
+    <PackageReference Include="Laraue.EfCoreTriggers.SqlServer" Version="8.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Linq.Queryable" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BotanikBambu.Data\BotanikBambu.Data.csproj" />
+    <ProjectReference Include="..\BotanikBambu.Models\BotanikBambu.Models.csproj" />
+    <ProjectReference Include="..\BotanikBambu.Repository\BotanikBambu.Repository.csproj" />
+    <ProjectReference Include="..\BotanikBambu.Web\BotanikBambu.Web\BotanikBambu.Web.csproj" />
+  </ItemGroup>
+
 </Project>
