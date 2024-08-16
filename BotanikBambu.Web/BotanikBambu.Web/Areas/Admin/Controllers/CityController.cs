@@ -1,16 +1,24 @@
 ﻿using BotanikBambu.Business.Abstract;
 using Microsoft.AspNetCore.Mvc;
-using Vkod.Web.Areas.Admin.Controllers;
+using Microsoft.AspNetCore.Http;
 
 namespace BotanikBambu.Web.Areas.Admin.Controllers
 {
-    public class CityController(ICityService cityService) : AdminBaseController
+    public class CityController : AdminBaseController
     {
-        private readonly ICityService _cityService=cityService;
+        private readonly ICityService _cityService;
+
+        // Constructor'da IHttpContextAccessor'ı base class'a ve ICityService'yi alıyoruz
+        public CityController(ICityService cityService, IHttpContextAccessor httpContextAccessor)
+            : base(httpContextAccessor)
+        {
+            _cityService = cityService;
+        }
+
         [HttpGet]
         public IActionResult GetAll()
         {
-           return Ok(_cityService.GetAll());
+            return Ok(_cityService.GetAll());
         }
     }
 }
