@@ -1,27 +1,34 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using BotanikBambu.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
-namespace Vkod.Web.Areas.Admin.Controllers
+namespace BotanikBambu.Web.Areas.Admin.Controllers
 {
-    [Area("Admin")]
-  //  [Authorize(Roles = "Admin")] // Sadece "Admin" rolüne sahip kullanıcılar erişebilir
+    // Burada controller'dan kalıtılması gerekiyor
     public class AdminBaseController : Controller
     {
-        private readonly int _userId;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public int UserId { get; private set; }
 
-        public AdminBaseController()
+        // Constructor'da hata varsa class içinde değil, method veya özellik tanımlamalarında olabilir
+        public AdminBaseController(IHttpContextAccessor httpContextAccessor)
         {
-            // Eğer kullanıcı kimliği doğrulanmışsa (Authenticated), kullanıcı ID'sini alır
-            if (User.Identity.IsAuthenticated)
+            _httpContextAccessor = httpContextAccessor;
+
+            if (_httpContextAccessor.HttpContext != null &&
+                _httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
             {
-                // Kullanıcı ID'sini alır ve _userId değişkenine atar
-                _userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim != null)
+                {
+                    UserId = int.Parse(userIdClaim.Value);
+                }
             }
             else
             {
-                // Eğer kullanıcı giriş yapmamışsa, bir hata fırlatabilirsiniz ya da başka bir işlem yapabilirsiniz
-                _userId = 0; // Veya başka bir varsayılan değer
+                // Kullanıcı kimliği yoksa veya HttpContext null ise bir varsayılan değer atayın
+                UserId = 0;  // Örneğin, UserId'yi sıfır olarak ayarlayabilirsiniz
             }
         }
     }
