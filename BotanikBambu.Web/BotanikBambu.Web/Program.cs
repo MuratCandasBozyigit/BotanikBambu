@@ -1,46 +1,57 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.EntityFrameworkCore;
+using BotanikBambu.Data;
+using BotanikBambu.Repository.Shared.Abstract;
+using BotanikBambu.Repository.Shared.Concrete;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Cookie tabanlı kimlik doğrulama ekliyoruz
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                {
-                    options.LoginPath = "/Account/Login"; // Kullanıcı yetkilendirilmezse yönlendirme yapılacak giriş yolu
-                });
+// Configure DbContext
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Yetkilendirme politikaları
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
-});
+// Register repository implementations
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+// Add HttpContextAccessor
+builder.Services.AddHttpContextAccessor();
+
+// Configure authentication
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/User/Login";
+        options.LogoutPath = "/User/Login";
+        options.Cookie.Name = "VkodCookie";
+        options.SlidingExpiration = true;
+    });
 
 var app = builder.Build();
 
-// Uygulamanın ortasında middleware'ler ekleniyor
-if (app.Environment.IsDevelopment())
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
 }
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
 
 app.UseRouting();
 
-// Kimlik doğrulama ve yetkilendirme middleware'lerini ekliyoruz
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllerRoute(
-        name: "areas",
-        pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
-    endpoints.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}");
-});
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
