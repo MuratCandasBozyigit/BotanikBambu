@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Configuration\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="jQuery" Version="3.7.1" />
     <PackageReference Include="Laraue.EfCoreTriggers.SqlServer" Version="8.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
@@ -24,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BotanikBambu.Data\BotanikBambu.Data.csproj" />
+    <ProjectReference Include="..\BotanikBambu.Dtos\BotanikBambu.Dtos.csproj" />
     <ProjectReference Include="..\BotanikBambu.Models\BotanikBambu.Models.csproj" />
     <ProjectReference Include="..\BotanikBambu.Repository\BotanikBambu.Repository.csproj" />
   </ItemGroup>

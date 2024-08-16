@@ -3,7 +3,7 @@ using Vkod.Web.Areas.Admin.Controllers;
 
 namespace BotanikBambu.Web.Areas.Admin.Controllers
 {
-    public class AdminHomeController : AdminBaseController
+    public class HomeController : AdminBaseController
     {
         public IActionResult Index()
         {

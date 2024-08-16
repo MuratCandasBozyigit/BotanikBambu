@@ -17,13 +17,14 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
-    <Folder Include="Areas\Shop\Controllers\" />
     <Folder Include="Areas\Shop\Data\" />
     <Folder Include="Areas\Shop\Models\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\BotanikBambu.Business\BotanikBambu.Business.csproj" />
+    <ProjectReference Include="..\..\BotanikBambu.Data\BotanikBambu.Data.csproj" />
+    <ProjectReference Include="..\..\BotanikBambu.Dtos\BotanikBambu.Dtos.csproj" />
   </ItemGroup>
 
 </Project>
