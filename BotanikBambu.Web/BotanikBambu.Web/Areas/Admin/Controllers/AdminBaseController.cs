@@ -5,7 +5,7 @@ using System.Security.Claims;
 namespace Vkod.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")] // Sadece "Admin" rolüne sahip kullanıcılar erişebilir
+  //  [Authorize(Roles = "Admin")] // Sadece "Admin" rolüne sahip kullanıcılar erişebilir
     public class AdminBaseController : Controller
     {
         private readonly int _userId;

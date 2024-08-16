@@ -1,8 +1,12 @@
 ﻿using BotanikBambu.Business.Abstract;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BotanikBambu.Web.Areas.Shop.Controllers
 {
+    [Area("Shop")]
+    [Authorize]
+    [Route("Shop/Shop")]
     public class ShopController : Controller
     {
         private readonly IBambuService _bambuService;

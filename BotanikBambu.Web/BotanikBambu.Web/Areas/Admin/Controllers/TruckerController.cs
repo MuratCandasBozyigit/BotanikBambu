@@ -1,9 +1,13 @@
 ﻿using BotanikBambu.Business.Abstract;
 using BotanikBambu.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BotanikBambu.Web.Areas.Admin.Controllers
 {
+    [Area("Admin")]
+    [Authorize]
+    [Route("Admin/Trucker")]
     public class TruckerController : Controller
     {
         private readonly ITruckerService _truckerService;
