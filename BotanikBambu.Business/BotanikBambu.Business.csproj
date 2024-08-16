@@ -26,7 +26,6 @@
     <ProjectReference Include="..\BotanikBambu.Data\BotanikBambu.Data.csproj" />
     <ProjectReference Include="..\BotanikBambu.Models\BotanikBambu.Models.csproj" />
     <ProjectReference Include="..\BotanikBambu.Repository\BotanikBambu.Repository.csproj" />
-    <ProjectReference Include="..\BotanikBambu.Web\BotanikBambu.Web\BotanikBambu.Web.csproj" />
   </ItemGroup>
 
 </Project>
