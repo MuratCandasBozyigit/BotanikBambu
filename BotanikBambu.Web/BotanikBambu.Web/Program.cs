@@ -3,6 +3,8 @@ using BotanikBambu.Data;
 using BotanikBambu.Repository.Shared.Abstract;
 using BotanikBambu.Repository.Shared.Concrete;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using BotanikBambu.Business.Shared.Abstract;
+using BotanikBambu.Business.Configuration; // BusinessDI ve RepositoryDI için gerekli
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,8 +15,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Register repository implementations
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+//// Register repository implementations
+//builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 // Add HttpContextAccessor
 builder.Services.AddHttpContextAccessor();
@@ -28,6 +30,10 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.Name = "VkodCookie";
         options.SlidingExpiration = true;
     });
+
+// Register services with DI
+builder.Services.BusinessDI();
+builder.Services.RepositoryDI();
 
 var app = builder.Build();
 

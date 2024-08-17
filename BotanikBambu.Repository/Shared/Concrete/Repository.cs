@@ -6,9 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using BotanikBambu.Data;
 using Microsoft.AspNetCore.Http;
+using BotanikBambu.Data;
 
 namespace BotanikBambu.Repository.Shared.Concrete
 {
@@ -16,8 +15,8 @@ namespace BotanikBambu.Repository.Shared.Concrete
     {
         private readonly ApplicationDbContext _context;
         private readonly DbSet<T> _dbSet;
-        private readonly int _ownerAndUpdateId;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private int? _ownerAndUpdateId;
 
         public Repository(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
@@ -25,14 +24,21 @@ namespace BotanikBambu.Repository.Shared.Concrete
             _dbSet = _context.Set<T>();
             _httpContextAccessor = httpContextAccessor;
 
-            if (_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
-                _ownerAndUpdateId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var user = _httpContextAccessor.HttpContext?.User;
+
+            if (user?.Identity?.IsAuthenticated == true)
+            {
+                _ownerAndUpdateId = int.Parse(user.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            }
         }
 
         public T Add(T entity)
         {
-            entity.ModifierId = _ownerAndUpdateId;
-            entity.OwnerId = _ownerAndUpdateId;
+            if (_ownerAndUpdateId.HasValue)
+            {
+                entity.ModifierId = _ownerAndUpdateId.Value;
+                entity.OwnerId = _ownerAndUpdateId.Value;
+            }
 
             _dbSet.Add(entity);
             Save();
@@ -43,9 +49,13 @@ namespace BotanikBambu.Repository.Shared.Concrete
         {
             foreach (var entity in entities)
             {
-                entity.ModifierId = _ownerAndUpdateId;
-                entity.OwnerId = _ownerAndUpdateId;
+                if (_ownerAndUpdateId.HasValue)
+                {
+                    entity.ModifierId = _ownerAndUpdateId.Value;
+                    entity.OwnerId = _ownerAndUpdateId.Value;
+                }
             }
+
             _dbSet.AddRange(entities);
             Save();
             return entities;
@@ -58,8 +68,11 @@ namespace BotanikBambu.Repository.Shared.Concrete
                 return false;
 
             entity.IsDeleted = true;
-            entity.ModifierId = _ownerAndUpdateId;
-            entity.OwnerId = _ownerAndUpdateId;
+            if (_ownerAndUpdateId.HasValue)
+            {
+                entity.ModifierId = _ownerAndUpdateId.Value;
+                entity.OwnerId = _ownerAndUpdateId.Value;
+            }
             Update(entity);
             return true;
         }
@@ -85,6 +98,11 @@ namespace BotanikBambu.Repository.Shared.Concrete
             return _dbSet.Find(id);
         }
 
+        public T GetById(Guid id)
+        {
+            return _dbSet.FirstOrDefault(x => x.Guid == id);
+        }
+
         public T GetFirstOrDefault(Expression<Func<T, bool>> predicate)
         {
             return _dbSet.FirstOrDefault(predicate);
@@ -97,8 +115,11 @@ namespace BotanikBambu.Repository.Shared.Concrete
 
         public T Update(T entity)
         {
-            entity.ModifierId = _ownerAndUpdateId;
-            entity.OwnerId = _ownerAndUpdateId;
+            if (_ownerAndUpdateId.HasValue)
+            {
+                entity.ModifierId = _ownerAndUpdateId.Value;
+                entity.OwnerId = _ownerAndUpdateId.Value;
+            }
             _dbSet.Update(entity);
             Save();
             return entity;

@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 using BotanikBambu.Models;
+
 namespace BotanikBambu.Repository.Shared.Abstract
 {
     public interface IRepository<T> where T : BaseModel
@@ -14,8 +13,9 @@ namespace BotanikBambu.Repository.Shared.Abstract
         T Add(T entity);
         List<T> AddRange(List<T> entities);
         T Update(T entity);
-       bool Delete(int id);
-        T GetById (int id);
+        bool Delete(int id);
+        T GetById(int id);
+        T GetById(Guid id);
         T GetFirstOrDefault(Expression<Func<T, bool>> predicate);
         void Save();
         bool Delete(Guid guid);

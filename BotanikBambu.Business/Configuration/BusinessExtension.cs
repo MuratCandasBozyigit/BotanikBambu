@@ -29,7 +29,7 @@ namespace BotanikBambu.Business.Configuration
         }
         public static void RepositoryDI(this IServiceCollection services)
         {
-            services.AddScoped(typeof(IRepository<>), typeof(IRepository<>));
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         }
     }
 }

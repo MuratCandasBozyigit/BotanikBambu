@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using BotanikBambu.Business.Abstract;
-using Microsoft.AspNetCore.Authorization;
 using BotanikBambu.Models;
+using System;
+
 namespace BotanikBambu.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize]
     [Route("Admin/Color")]
     public class ColorController : Controller
     {
@@ -22,7 +22,8 @@ namespace BotanikBambu.Web.Areas.Admin.Controllers
         }
 
         #region COLOR_CRUD
-        [HttpPost]
+
+        [HttpPost("Add")]
         public IActionResult Add([FromBody] Color color)
         {
             if (color == null)
@@ -36,15 +37,25 @@ namespace BotanikBambu.Web.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error:{ex.Message}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        [HttpPost]
+
+        [HttpGet("GetAll")]
         public IActionResult GetAll()
         {
-            return Ok(_colorService.GetAll());
+            try
+            {
+                var colors = _colorService.GetAll();
+                return Ok(colors);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
-        [HttpPost]
+
+        [HttpPost("Update/{id}")]
         public IActionResult Update([FromBody] Color color)
         {
             if (color == null)
@@ -58,28 +69,50 @@ namespace BotanikBambu.Web.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal Server Error {ex.Message}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
-
-
         }
-        [HttpPost]
-        public IActionResult Delete([FromBody] Guid id)
+
+        [HttpGet("GetById/{id}")]
+        public IActionResult GetById(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                return BadRequest("Invalid Id Format");
+            }
+            try
+            {
+                var color = _colorService.GetById(id);
+                if (color == null)
+                {
+                    return NotFound("Color Not Found");
+                }
+                return Ok(color);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        [HttpDelete("Delete/{id}")]
+        public IActionResult Delete(Guid id)
         {
             if (id == Guid.Empty)
             {
                 return BadRequest("Invalid Id Format");
             }
 
-            var color = _colorService.GetFirstOrDefault(i => i.Guid == id);
+            var color = _colorService.GetById(id);
             if (color == null)
             {
-
-                return NotFound("Color Not found");
+                return NotFound("Color Not Found");
             }
-            _colorService.Delete(color.Id);
-            return Ok(color);
-            #endregion
+
+            _colorService.Delete(id);
+            return Ok();
         }
+
+
+        #endregion
     }
 }

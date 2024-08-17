@@ -43,6 +43,13 @@ public class Service<T> : IService<T> where T : BaseModel
         return _repository.GetById(id);
     }
 
+
+    public T GetById(Guid id)
+    {
+       
+        return _repository.GetById(id);
+    }
+
     public T GetFirstOrDefault(Expression<Func<T, bool>> expression)
     {
         return _repository.GetFirstOrDefault(expression);

@@ -10,5 +10,6 @@ namespace BotanikBambu.Business.Abstract
 {
     public interface IColorService:IService<Color>
     {
+    
     }
 }
