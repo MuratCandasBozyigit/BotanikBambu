@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using BotanikBambu.Web.Areas.Admin.Controllers;
 using Microsoft.AspNetCore.Http;
 
-namespace Vkod.Web.Areas.Admin.Controllers
+namespace BotanikBambu.Web.Areas.Admin.Controllers
 {
     public class GenderController : AdminBaseController
     {

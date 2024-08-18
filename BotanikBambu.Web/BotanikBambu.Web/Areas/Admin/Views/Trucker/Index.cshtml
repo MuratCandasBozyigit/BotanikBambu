@@ -14,7 +14,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3 row">
-                        <label class="form-label">Kamyoncu Adı Soyadı: </label>
+                        <label class="form-label">Kamyoncu Adı: </label>
                         <input type="text" id="truckerName" placeholder="Lütfen kamyoncu adı giriniz" class="form-control" required />
                         <span id="truckerName-error" style="color:red; display:none;">Alan boş bırakılamaz.</span>
                     </div>
@@ -28,11 +28,10 @@
                         <input type="text" id="truckerPlate" placeholder="Lütfen kamyon plakası giriniz" class="form-control" required />
                         <span id="truckerPlate-error" style="color:red; display:none;">Alan boş bırakılamaz.</span>
                     </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary emptyValue" data-bs-dismiss="modal">Kapat</button>
-                        <button type="button" id="btnSave" class="btn btn-primary">Kaydet</button>
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary emptyValue" data-bs-dismiss="modal">Kapat</button>
+                    <button type="button" id="btnSave" class="btn btn-primary">Kaydet</button>
                 </div>
             </div>
         </div>
@@ -45,7 +44,7 @@
                     <box-icon name="car" color="white" size="sm" animation="tada"></box-icon> Kamyoncular
                 </div>
                 <div class="col-1 text-end">
-                    <a id="btnAdd" href="#" class="btn btn-outline-dark">+ Yeni Kamyoncu</a>
+                    <a id="btnAdd" href="#" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#modal">+ Yeni Kamyoncu</a>
                 </div>
             </div>
         </div>
@@ -59,14 +58,16 @@
     <script src="~/assets/libs/sweetalert2/sweetalert2.min.js"></script>
     <script>
         $(document).ready(function () {
+            // Modal kapandıktan sonra verileri temizle
             $(".emptyValue").click(function () {
                 $("input").val("");
                 $(".error-message").hide();
             });
 
+            // DataTable yapılandırması
             var table = $('#tblTrucker').DataTable({
                 ajax: {
-                    url: '/Admin/Trucker/GetAll',
+                    url: '/Admin/Trucker/GetAll/',
                     dataSrc: ''
                 },
                 columns: [
@@ -76,20 +77,22 @@
                     {
                         data: null, title: 'İşlemler', render: function (data, type, row) {
                             return `
-                                        <a href="#" class="btn btn-sm btn-warning editKamyoncu" data-id="${row.guid}">Düzenle</a>
-                                        <a href="#" class="btn btn-sm btn-danger deleteKamyoncu" data-id="${row.guid}">Sil</a>
-                                    `;
+                                                <a href="#" class="btn btn-sm btn-warning editKamyoncu" data-id="${row.guid}">Düzenle</a>
+                                                <a href="#" class="btn btn-sm btn-danger deleteKamyoncu" data-id="${row.guid}">Sil</a>
+                                            `;
                         }
                     }
                 ]
             });
 
+            // Yeni Kamyoncu ekle butonuna tıklayınca
             $('#btnAdd').click(function () {
                 $('#modalTitle').text('Yeni Kamyoncu Ekle');
                 $('#btnSave').text('Ekle');
                 $('#modal').modal('show');
             });
 
+            // Kamyoncu düzenleme işlemi
             $('#tblTrucker').on('click', '.editKamyoncu', function () {
                 var id = $(this).data('id');
                 $.ajax({
@@ -108,6 +111,7 @@
                 });
             });
 
+            // Kamyoncu silme işlemi
             $('#tblTrucker').on('click', '.deleteKamyoncu', function () {
                 var id = $(this).data('id');
                 Swal.fire({
@@ -131,6 +135,58 @@
                                 Swal.fire('Hata', 'Kamyoncu silinirken bir sorun oluştu.', 'error');
                             }
                         });
+                    }
+                });
+            });
+
+            // Kamyoncu kaydetme/güncelleme işlemi
+            $('#btnSave').click(function () {
+                var trucker = {
+                    name: $('#truckerName').val(),
+                    surname: $('#truckerSurname').val(),
+                    plate: $('#truckerPlate').val()
+                };
+
+                // Alan boş bırakıldığında hata mesajı göster
+                let isValid = true;
+                if (!trucker.name) {
+                    $('#truckerName-error').show();
+                    isValid = false;
+                } else {
+                    $('#truckerName-error').hide();
+                }
+                if (!trucker.surname) {
+                    $('#truckerSurname-error').show();
+                    isValid = false;
+                } else {
+                    $('#truckerSurname-error').hide();
+                }
+                if (!trucker.plate) {
+                    $('#truckerPlate-error').show();
+                    isValid = false;
+                } else {
+                    $('#truckerPlate-error').hide();
+                }
+
+                if (!isValid) {
+                    return;
+                }
+
+                var url = $('#btnSave').text() === 'Ekle' ? '/Admin/Trucker/Add' : '/Admin/Trucker/Update';
+                var method = $('#btnSave').text() === 'Ekle' ? 'POST' : 'PUT';
+
+                $.ajax({
+                    type: method,
+                    url: url,
+                    data: JSON.stringify(trucker),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (response) {
+                        $('#modal').modal('hide');
+                        table.ajax.reload();
+                        Swal.fire('Başarılı!', 'Kamyoncu başarıyla kaydedildi.', 'success');
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        Swal.fire('Hata', 'Kamyoncu kaydedilirken bir sorun oluştu. Detaylar: ' + errorThrown, 'error');
                     }
                 });
             });

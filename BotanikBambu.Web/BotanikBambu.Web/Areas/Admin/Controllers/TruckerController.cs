@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BotanikBambu.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize]
+  
     [Route("Admin/Trucker")]
     public class TruckerController : Controller
     {
@@ -41,7 +41,7 @@ namespace BotanikBambu.Web.Areas.Admin.Controllers
             }
 
         }
-        [HttpPost]
+        [HttpPost("GetAll")]
         public IActionResult GetAll()
         {
             return Ok(_truckerService.GetAll());
