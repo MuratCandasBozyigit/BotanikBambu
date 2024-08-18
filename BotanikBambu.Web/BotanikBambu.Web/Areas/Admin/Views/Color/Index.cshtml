@@ -1,9 +1,9 @@
 ﻿@using System.Security.Claims
 @{
-    ViewData["Title"] = "Araçlarım";
+    ViewData["Title"] = "Renkler";
 }
 
-<h2>Araçlarım</h2>
+<h2>Renkler</h2>
 
 <div class="col-12">
     <div class="modal fade" id="modal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
@@ -74,9 +74,9 @@
                         {
                             data: null, title: 'İşlemler', render: function (data, type, row) {
                                 return `
-                                    <a href="#" class="btn btn-sm btn-warning editColor" data-id="${row.guid}">Düzenle</a>
-                                    <a href="#" class="btn btn-sm btn-danger deleteColor" data-id="${row.guid}">Sil</a>
-                                `;
+                                                                        <a href="#" class="btn btn-sm btn-warning editColor" data-id="${row.guid}">Düzenle</a>
+                                                                        <a href="#" class="btn btn-sm btn-danger deleteColor" data-id="${row.guid}">Sil</a>
+                                                                    `;
                             }
                         }
                     ]
@@ -136,32 +136,40 @@
 
                 $('#btnSave').click(function () {
                     var color = {
+
                         name: $('#colorName').val(),
-                        hex: $('#colorHex').val(),
-                        id: $('#colorId').val()
+                        hex: $('#colorHex').val(), id: $('#colorId').val()
                     };
 
                     var url = $('#btnSave').text() === 'Ekle' ? '/Admin/Color/Add' : '/Admin/Color/Update';
-                    var method = $('#btnSave').text() === 'Ekle' ? 'POST' : 'PUT';
+                    var method = $('#btnSave').text() === 'Ekle' ? method : 'PUT';
+
+                    console.log('Renk Verisi:', color);
+                    console.log('Kullanılan URL:', url);
+                    console.log('HTTP Yöntemi:', method);
 
                     $.ajax({
                         type: method,
                         url: url,
                         data: JSON.stringify(color),
                         contentType: 'application/json; charset=utf-8',
-                        success: function () {
+                        success: function (response) {
                             $('#modal').modal('hide');
                             table.ajax.reload();
                             Swal.fire('Başarılı!', 'Renk başarıyla kaydedildi.', 'success');
+                            console.log('Başarı Yanıtı:', response);
                         },
                         error: function (jqXHR, textStatus, errorThrown) {
                             console.error('Hata:', textStatus, errorThrown);
+                            console.error('Yanıt İçeriği:', jqXHR.responseText);
                             Swal.fire('Hata', 'Renk kaydedilirken bir sorun oluştu. Detaylar: ' + errorThrown, 'error');
                         }
                     });
                 });
 
             });
+
+                       
 
         </script>
     }
