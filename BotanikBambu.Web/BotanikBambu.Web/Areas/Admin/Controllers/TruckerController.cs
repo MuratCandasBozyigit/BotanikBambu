@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BotanikBambu.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-  
+
     [Route("Admin/Trucker")]
     public class TruckerController : Controller
     {
@@ -23,7 +23,7 @@ namespace BotanikBambu.Web.Areas.Admin.Controllers
         }
 
         #region COLOR_CRUD
-        [HttpPost]
+        [HttpPost("Add")]
         public IActionResult Add([FromBody] Trucker trucker)
         {
             if (trucker == null)
@@ -41,11 +41,20 @@ namespace BotanikBambu.Web.Areas.Admin.Controllers
             }
 
         }
-        [HttpPost("GetAll")]
+        [HttpGet("GetAll")]
         public IActionResult GetAll()
         {
-            return Ok(_truckerService.GetAll());
+            try
+            {
+                var trucker = _truckerService.GetAll();
+                return Ok(trucker);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
+
         [HttpPost]
         public IActionResult Update([FromBody] Trucker trucker)
 

@@ -60,7 +60,7 @@
         $(document).ready(function () {
             // Modal kapandıktan sonra verileri temizle
             $(".emptyValue").click(function () {
-                $("input").val("");
+                $("input, textarea").val("");
                 $(".error-message").hide();
             });
 
@@ -71,9 +71,9 @@
                     dataSrc: ''
                 },
                 columns: [
-                    { data: 'name', title: 'Kamyoncu Adı' },
-                    { data: 'surname', title: 'Kamyoncu Soyadı' },
-                    { data: 'plate', title: 'Kamyon Plakası' },
+                    { data: 'truckerName', title: 'Kamyoncu Adı' },
+                    { data: 'truckerSurname', title: 'Kamyoncu Soyadı' },
+                    { data: 'truckPlate', title: 'Kamyon Plakası' },
                     {
                         data: null, title: 'İşlemler', render: function (data, type, row) {
                             return `
