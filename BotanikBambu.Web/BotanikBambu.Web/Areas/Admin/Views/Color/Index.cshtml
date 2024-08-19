@@ -24,7 +24,6 @@
                         <input type="color" id="colorHex" placeholder="Lütfen hex değerini giriniz" required />
                         <span id="colorHex-error" style="color:red; display:none;">Alan boş bırakılamaz.</span>
                     </div>
-                    <input type="hidden" id="colorId" />
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary emptyValue" data-bs-dismiss="modal">Kapat</button>
@@ -51,14 +50,12 @@
         </div>
     </div>
 </div>
-
 @section Scripts {
     <script src="~/assets/libs/sweetalert2/sweetalert2.min.js"></script>
     <script>
         $(document).ready(function () {
             $(".emptyValue").click(function () {
                 $("input, textarea").val("");
-                $("#colorId").val(""); // Hidden input'u sıfırla
                 $(".error-message").hide();
             });
 
@@ -77,9 +74,9 @@
                     {
                         data: null, title: 'İşlemler', render: function (data, type, row) {
                             return `
-                                        <a href="#" class="btn btn-sm btn-warning editColor" data-id="${row.guid}">Düzenle</a>
-                                        <a href="#" class="btn btn-sm btn-danger deleteColor" data-id="${row.guid}">Sil</a>
-                                    `;
+                                                                                <a href="#" class="btn btn-sm btn-warning editColor" data-id="${row.guid}">Düzenle</a>
+                                                                                <a href="#" class="btn btn-sm btn-danger deleteColor" data-id="${row.guid}">Sil</a>
+                                                                            `;
                         }
                     }
                 ]
@@ -99,7 +96,7 @@
                     success: function (res) {
                         $('#colorName').val(res.name);
                         $('#colorHex').val(res.hex);
-                        $('#colorId').val(res.id);
+                        $('#colorId').val(res.id); // Ensure you are using the correct property
                     },
                     error: function () {
                         Swal.fire('Hata', 'Renk verisi yüklenirken bir sorun oluştu.', 'error');
@@ -139,13 +136,13 @@
 
             $('#btnSave').click(function () {
                 var color = {
+
                     name: $('#colorName').val(),
-                    hex: $('#colorHex').val(),
-                    id: $('#colorId').val()
+                    hex: $('#colorHex').val(), id: $('#colorId').val()
                 };
 
                 var url = $('#btnSave').text() === 'Ekle' ? '/Admin/Color/Add' : '/Admin/Color/Update';
-                var method = $('#btnSave').text() === 'Ekle' ? 'POST' : 'PUT';
+                var method = $('#btnSave').text() === 'Ekle' ? method : 'PUT';
 
                 console.log('Renk Verisi:', color);
                 console.log('Kullanılan URL:', url);
@@ -169,6 +166,10 @@
                     }
                 });
             });
+
         });
+
+
+
     </script>
 }
