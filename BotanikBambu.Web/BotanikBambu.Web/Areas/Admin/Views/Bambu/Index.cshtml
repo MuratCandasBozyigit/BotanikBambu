@@ -1,0 +1,93 @@
+﻿@using System.Security.Claims
+@{
+    ViewData["Title"] = "Renkler";
+}
+
+<h2>Renkler</h2>
+
+<div class="col-12">
+    <div class="modal fade" id="modal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle"></h5>
+                    <button type="button" class="btn-close emptyValue" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3 row">
+                        <label class="form-label">Renk Adı: </label>
+                        <input type="text" id="colorName" placeholder="Lütfen renk adı giriniz" class="form-control" required />
+                        <span id="colorName-error" style="color:red; display:none;">Alan boş bırakılamaz.</span>
+                    </div>
+                    <div class="mb-3 row">
+                        <label class="form-label">Hex: </label>
+                        <input type="color" id="colorHex" placeholder="Lütfen hex değerini giriniz" required />
+                        <span id="colorHex-error" style="color:red; display:none;">Alan boş bırakılamaz.</span>
+                    </div>
+                    <input type="hidden" id="colorId" />
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary emptyValue" data-bs-dismiss="modal">Kapat</button>
+                        <button type="button" id="btnSave" class="btn btn-primary">Kaydet</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-gradient-success text-white">
+            <div class="row">
+                <div class="col-11">
+                    <box-icon name="car" color="white" size="sm" animation="tada"></box-icon> Renklerim
+                </div>
+                <div class="col-1 text-end">
+                    <a id="btnAdd" href="#" class="btn btn-outline-dark">+ Yeni Renk</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <table id="tblColor" class="table table-hover table-striped table-bordered"></table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+    <script>
+        $(document).ready(function{
+            $(".emptyValue").click(function{
+                $("input,textarea").val("");
+                $("bambuId").val("");
+                $(".error-message").hide();
+            });
+
+            var table = $('#tblBambu').DataTable({
+                ajax: {
+                    url: '/Admin/Bambu/GetAll/',
+                    dataSrc: '',
+
+                },
+                columns: [
+                    { data: 'name', title: 'Bambu' },
+                    {
+                        data: 'description', title: 'Açıklama', render: function (data, type, row) {
+                            return '<a href="#" class="colorLink" data-id="' + row.guid + '">' + data + '</a>';
+                        }
+                    },
+                    {
+                        data: 'model', title: 'Ürün Model', render: function (data, type, row) {
+                            return '<a href="#" class="colorLink" data-id="' + row.guid + '">' + data + '</a>';
+                        }
+                    },
+                    data: null, title: 'işlemler', render: function (data, type, row) {
+                        return `
+                                                                        <a href="#" class="btn btn-sm btn-warning editColor" data-id="${row.guid}">Düzenle</a>
+                                                                        <a href="#" class="btn btn-sm btn-danger deleteColor" data-id="${row.guid}">Sil</a>
+                                                                    `;
+                    }
+                ]
+            });
+        })
+    </script>
+}
