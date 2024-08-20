@@ -53,7 +53,6 @@
         </div>
     </div>
 </div>
-
 @section Scripts {
     <script src="~/assets/libs/sweetalert2/sweetalert2.min.js"></script>
     <script>
@@ -78,8 +77,8 @@
                         data: null, title: 'İşlemler', render: function (data, type, row) {
                             return `
                                                 <a href="#" class="btn btn-sm btn-warning editKamyoncu" data-id="${row.guid}">Düzenle</a>
-                                                <a href="#" class="btn btn-sm btn-danger deleteKamyoncu" data-id="${row.guid}">Sil</a>
-                                            `;
+                                        <a href="#" class="btn btn-sm btn-danger deleteKamyoncu" data-id="${row.guid}">Sil</a>
+                                    `;
                         }
                     }
                 ]
@@ -98,9 +97,9 @@
                 $.ajax({
                     url: "/Admin/Trucker/GetById/" + id,
                     success: function (res) {
-                        $('#truckerName').val(res.name);
-                        $('#truckerSurname').val(res.surname);
-                        $('#truckerPlate').val(res.plate);
+                        $('#truckerName').val(res.truckerName);
+                        $('#truckerSurname').val(res.truckerSurname);
+                        $('#truckerPlate').val(res.truckPlate);
                         $('#modalTitle').text('Kamyoncu Düzenle');
                         $('#btnSave').text('Güncelle');
                         $('#modal').modal('show');
@@ -142,26 +141,26 @@
             // Kamyoncu kaydetme/güncelleme işlemi
             $('#btnSave').click(function () {
                 var trucker = {
-                    name: $('#truckerName').val(),
-                    surname: $('#truckerSurname').val(),
-                    plate: $('#truckerPlate').val()
+                    TruckerName: $('#truckerName').val(),
+                    TruckerSurname: $('#truckerSurname').val(),
+                    TruckPlate: $('#truckerPlate').val()
                 };
 
                 // Alan boş bırakıldığında hata mesajı göster
                 let isValid = true;
-                if (!trucker.name) {
+                if (!trucker.TruckerName) {
                     $('#truckerName-error').show();
                     isValid = false;
                 } else {
                     $('#truckerName-error').hide();
                 }
-                if (!trucker.surname) {
+                if (!trucker.TruckerSurname) {
                     $('#truckerSurname-error').show();
                     isValid = false;
                 } else {
                     $('#truckerSurname-error').hide();
                 }
-                if (!trucker.plate) {
+                if (!trucker.TruckPlate) {
                     $('#truckerPlate-error').show();
                     isValid = false;
                 } else {
@@ -172,7 +171,7 @@
                     return;
                 }
 
-                var url = $('#btnSave').text() === 'Ekle' ? '/Admin/Trucker/Add' : '/Admin/Trucker/Update';
+                var url = $('#btnSave').text() === 'Ekle' ? '/Admin/Trucker/Add/' : '/Admin/Trucker/Update/';
                 var method = $('#btnSave').text() === 'Ekle' ? 'POST' : 'PUT';
 
                 $.ajax({

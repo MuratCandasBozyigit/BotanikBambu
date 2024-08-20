@@ -22,7 +22,7 @@ namespace BotanikBambu.Web.Areas.Admin.Controllers
             return View();
         }
 
-        #region COLOR_CRUD
+        #region TRUCKER_CRUD
         [HttpPost("Add")]
         public IActionResult Add([FromBody] Trucker trucker)
         {
@@ -55,14 +55,12 @@ namespace BotanikBambu.Web.Areas.Admin.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPut("Update")]
         public IActionResult Update([FromBody] Trucker trucker)
-
         {
             if (trucker == null)
             {
                 return BadRequest("Data is not valid");
-
             }
             try
             {
@@ -74,17 +72,26 @@ namespace BotanikBambu.Web.Areas.Admin.Controllers
                 return StatusCode(500, $"Internal server error:{ex.Message}");
             }
         }
-        [HttpPost]
-        public IActionResult Delete(string id)
-        {
-            if (Guid.TryParse(id, out Guid parseId))
-            {
-                var result = _truckerService.GetFirstOrDefault(i => i.Guid == parseId);
-                _truckerService.Delete(result.Id); return Ok(result);
-            }
 
-            return BadRequest();
+        [HttpDelete("Delete/{id}")]
+        public IActionResult Delete(Guid id)
+        {
+            try
+            {
+                var result = _truckerService.GetFirstOrDefault(i => i.Guid == id);
+                if (result != null)
+                {
+                    _truckerService.Delete(result.Id);
+                    return Ok();
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
+
         #endregion
 
     }
