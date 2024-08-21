@@ -27,7 +27,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         options.LoginPath = "/User/Login";
         options.LogoutPath = "/User/Login";
-        options.Cookie.Name = "VkodCookie";
+        options.Cookie.Name = "BotanikBambuCookie";
         options.SlidingExpiration = true;
     });
 
@@ -52,9 +52,18 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Shop}/{action=Index}/{id?}");
+
+
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+
 
 app.MapControllerRoute(
     name: "default",

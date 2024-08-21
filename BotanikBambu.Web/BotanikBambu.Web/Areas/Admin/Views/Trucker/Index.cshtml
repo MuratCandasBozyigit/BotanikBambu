@@ -16,17 +16,17 @@
                     <div class="mb-3 row">
                         <label class="form-label">Kamyoncu Adı: </label>
                         <input type="text" id="truckerName" placeholder="Lütfen kamyoncu adı giriniz" class="form-control" required />
-                        <span id="truckerName-error" style="color:red; display:none;">Alan boş bırakılamaz.</span>
+                        <span id="truckerName-error" class="text-danger" style="display:none;">Alan boş bırakılamaz.</span>
                     </div>
                     <div class="mb-3 row">
                         <label class="form-label">Kamyoncu Soyadı: </label>
                         <input type="text" id="truckerSurname" placeholder="Lütfen kamyoncu soyadı giriniz" class="form-control" required />
-                        <span id="truckerSurname-error" style="color:red; display:none;">Alan boş bırakılamaz.</span>
+                        <span id="truckerSurname-error" class="text-danger" style="display:none;">Alan boş bırakılamaz.</span>
                     </div>
                     <div class="mb-3 row">
                         <label class="form-label">Kamyon Plakası: </label>
                         <input type="text" id="truckerPlate" placeholder="Lütfen kamyon plakası giriniz" class="form-control" required />
-                        <span id="truckerPlate-error" style="color:red; display:none;">Alan boş bırakılamaz.</span>
+                        <span id="truckerPlate-error" class="text-danger" style="display:none;">Alan boş bırakılamaz.</span>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -53,14 +53,15 @@
         </div>
     </div>
 </div>
+
 @section Scripts {
     <script src="~/assets/libs/sweetalert2/sweetalert2.min.js"></script>
     <script>
         $(document).ready(function () {
             // Modal kapandıktan sonra verileri temizle
             $(".emptyValue").click(function () {
-                $("input, textarea").val("");
-                $(".error-message").hide();
+                $("input").val("");
+                $(".text-danger").hide();
             });
 
             // DataTable yapılandırması
@@ -76,7 +77,7 @@
                     {
                         data: null, title: 'İşlemler', render: function (data, type, row) {
                             return `
-                                                <a href="#" class="btn btn-sm btn-warning editKamyoncu" data-id="${row.guid}">Düzenle</a>
+                                        <a href="#" class="btn btn-sm btn-warning editKamyoncu" data-id="${row.guid}">Düzenle</a>
                                         <a href="#" class="btn btn-sm btn-danger deleteKamyoncu" data-id="${row.guid}">Sil</a>
                                     `;
                         }
@@ -84,7 +85,7 @@
                 ]
             });
 
-            // Yeni Kamyoncu ekle butonuna tıklayınca
+            // Yeni Kamyoncu ekleme işlemi
             $('#btnAdd').click(function () {
                 $('#modalTitle').text('Yeni Kamyoncu Ekle');
                 $('#btnSave').text('Ekle');
@@ -179,13 +180,13 @@
                     url: url,
                     data: JSON.stringify(trucker),
                     contentType: 'application/json; charset=utf-8',
-                    success: function (response) {
+                    success: function () {
                         $('#modal').modal('hide');
                         table.ajax.reload();
                         Swal.fire('Başarılı!', 'Kamyoncu başarıyla kaydedildi.', 'success');
                     },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        Swal.fire('Hata', 'Kamyoncu kaydedilirken bir sorun oluştu. Detaylar: ' + errorThrown, 'error');
+                    error: function () {
+                        Swal.fire('Hata', 'Kamyoncu kaydedilirken bir sorun oluştu.', 'error');
                     }
                 });
             });

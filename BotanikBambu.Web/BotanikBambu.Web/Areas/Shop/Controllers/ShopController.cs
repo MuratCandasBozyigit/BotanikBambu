@@ -5,10 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace BotanikBambu.Web.Areas.Shop.Controllers
 {
     [Area("Shop")]
-    [Authorize]
-    [Route("Shop/Shop")]
+  //  [Authorize]
+   // [Route("Shop/Shop")]
     public class ShopController : Controller
     {
+        //public ShopController(IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+        //{
+        //}
+
         private readonly IBambuService _bambuService;
         private readonly IColorService _colorService;
         private readonly ICartsService _cartService;

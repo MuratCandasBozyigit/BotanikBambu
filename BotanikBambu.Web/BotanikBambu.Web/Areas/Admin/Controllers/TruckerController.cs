@@ -1,12 +1,11 @@
 ﻿using BotanikBambu.Business.Abstract;
 using BotanikBambu.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace BotanikBambu.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-
     [Route("Admin/Trucker")]
     public class TruckerController : Controller
     {
@@ -23,6 +22,7 @@ namespace BotanikBambu.Web.Areas.Admin.Controllers
         }
 
         #region TRUCKER_CRUD
+
         [HttpPost("Add")]
         public IActionResult Add([FromBody] Trucker trucker)
         {
@@ -30,6 +30,7 @@ namespace BotanikBambu.Web.Areas.Admin.Controllers
             {
                 return BadRequest("Trucker data is null.");
             }
+
             try
             {
                 _truckerService.Add(trucker);
@@ -37,16 +38,25 @@ namespace BotanikBambu.Web.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error:{ex.Message}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("GetById/{id}")]
+        public IActionResult GetById(int id)
+        {
+            if (id == 0)
+            {
+                return BadRequest("Id is invalid.");
             }
 
-        }
-        [HttpGet("GetAll")]
-        public IActionResult GetAll()
-        {
             try
             {
-                var trucker = _truckerService.GetAll();
+                var trucker = _truckerService.GetById(id);
+                if (trucker == null)
+                {
+                    return NotFound();
+                }
                 return Ok(trucker);
             }
             catch (Exception ex)
@@ -55,23 +65,48 @@ namespace BotanikBambu.Web.Areas.Admin.Controllers
             }
         }
 
-        [HttpPut("Update")]
-        public IActionResult Update([FromBody] Trucker trucker)
+        [HttpGet("GetAll")]
+        public IActionResult GetAll()
+        {
+            try
+            {
+                var truckers = _truckerService.GetAll();
+                return Ok(truckers);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+
+        [HttpPut("Update/{id}")]
+        public IActionResult Update(Guid id, [FromBody] Trucker trucker)
         {
             if (trucker == null)
             {
-                return BadRequest("Data is not valid");
+                return BadRequest("Data is not valid.");
             }
+
             try
             {
+                // Kamyoncuyu güncelleme işlemi yapılmadan önce ID doğrulaması
+                var existingTrucker = _truckerService.GetById(id);
+                if (existingTrucker == null)
+                {
+                    return NotFound("Trucker not found.");
+                }
+
                 _truckerService.Update(trucker);
                 return Ok();
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error:{ex.Message}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
 
         [HttpDelete("Delete/{id}")]
         public IActionResult Delete(Guid id)
@@ -93,6 +128,5 @@ namespace BotanikBambu.Web.Areas.Admin.Controllers
         }
 
         #endregion
-
     }
 }
