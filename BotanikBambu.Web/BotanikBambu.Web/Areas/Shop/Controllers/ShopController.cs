@@ -42,6 +42,10 @@ namespace BotanikBambu.Web.Areas.Shop.Controllers
 
         #endregion
 
+        #region PUT_ALL
+        //Put all carts tuş tetieklendiğinde bu işlemi yapacak cart service putall gibi bbir yapı oluştur ajaxla tetiklendiğinde oraya pushlansın kullnıcı login yapılmış ise sql de ıd ile tutması lazım ürünü şu ıd ili ürün vardı diye değil ise cache bellekte tutması daha saglıklı refresh atıldığında favların gitmesi lazım yada hata koyarsın favorilere eklemek için girş yapmış olmanız lazım falan diye.
+        #endregion
+
         #region Link_Carts
 
         #endregion

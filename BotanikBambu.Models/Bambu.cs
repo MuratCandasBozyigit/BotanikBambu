@@ -12,16 +12,16 @@ namespace BotanikBambu.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public string Model { get; set; }
-       
+
 
         public int? ColorId { get; set; }
         public virtual Color? Color { get; set; }
 
         public string? ProfilePhoto { get; set; }
         public bool IsPublic { get; set; } = true;
-      
+
         public virtual ICollection<Carts> Carts { get; set; } = [];
 
-        
+
     }
 }
