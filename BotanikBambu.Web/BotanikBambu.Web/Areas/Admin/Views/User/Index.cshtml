@@ -1,4 +1,4 @@
-﻿ <!-- ============================================================== -->
+﻿<!-- ============================================================== -->
 <!-- Start right Content here -->
 <!-- ============================================================== -->
 <div class="main-content">
@@ -10,12 +10,12 @@
             <div class="row">
                 <div class="col-12">
                     <div class="page-title-box d-flex align-items-center justify-content-between">
-                        <h4 class="mb-0">Responsive</h4>
+                        <h4 class="mb-0">Datatables</h4>
 
                         <div class="page-title-right">
                             <ol class="breadcrumb m-0">
                                 <li class="breadcrumb-item"><a href="javascript: void(0);">Tables</a></li>
-                                <li class="breadcrumb-item active">Responsive</li>
+                                <li class="breadcrumb-item active">Datatables</li>
                             </ol>
                         </div>
 
@@ -29,64 +29,156 @@
                     <div class="card">
                         <div class="card-body">
 
-                            <h4 class="card-title">Example</h4>
-                            <p class="card-title-desc">This is an experimental awesome solution for responsive tables with complex data.</p>
+                            <h4 class="card-title">Default Datatable</h4>
+                            <p class="card-title-desc">
+                                DataTables has most features enabled by
+                                default, so all you need to do to use it with your own tables is to call
+                                the construction function: <code>$().DataTable();</code>.
+                            </p>
 
-                            <div class="table-rep-plugin">
-                                <div class="table-responsive mb-0" data-pattern="priority-columns">
-                                    <table id="tech-companies-1" class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>Company</th>
-                                                <th data-priority="1">Last Trade</th>
-                                                <th data-priority="3">Trade Time</th>
-                                                <th data-priority="1">Change</th>
-                                                <th data-priority="3">Prev Close</th>
-                                                <th data-priority="3">Open</th>
-                                                <th data-priority="6">Bid</th>
-                                                <th data-priority="6">Ask</th>
-                                                <th data-priority="6">1y Target Est</th>
-                                            </tr>
-                                        </thead>
+                            <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Gender</th>@*Gender ıD den getir*@
+                                        <th>City</th>
+                                        <th>Gsm</th>
+                                        <th>Start date</th>
+                                        <th>Email</th>
+                                    </tr>
+                                </thead>
 
 
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                            </div>
+                                <tbody>
+                                @*   <tr ><td>@foreach()</td></tr> *@
+                                
+                                </tbody>
+                            </table>
 
                         </div>
                     </div>
                 </div> <!-- end col -->
             </div> <!-- end row -->
-        </div> <!-- container-fluid -->
-    </div>
-    <!-- End Page-content -->
+            @section Scripts {
+    <script src="~/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".emptyValue").click(function () {
+                $("input, textarea").val("");
+                $(".error-message").hide();
+            });
 
-
-    <footer class="footer">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-sm-6">
-                    <script>document.write(new Date().getFullYear())</script> © Minible.
-                </div>
-                <div class="col-sm-6">
-                    <div class="text-sm-end d-none d-sm-block">
-                        Crafted with <i class="mdi mdi-heart text-danger"></i> by <a href="https://themesbrand.com/" target="_blank" class="text-reset">Themesbrand</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-</div>
-<!-- end main content-->
-
-
-
-                    @section Scripts{
-                        <script>
-
-                        </script>
+            var table = $('#tblColor').DataTable({
+                ajax: {
+                    url: '/Admin/Color/GetAll',
+                    dataSrc: ''
+                },
+                columns: [
+                    { data: 'name', title: 'Renk' },
+                    {
+                        data: 'hex', title: 'Hex', render: function (data, type, row) {
+                            return '<a href="#" class="colorLink" data-id="' + row.guid + '">' + data + '</a>';
+                        }
+                    },
+                    {
+                        data: null, title: 'İşlemler', render: function (data, type, row) {
+                            return `
+                                                                                        <a href="#" class="btn btn-sm btn-warning editColor" data-id="${row.guid}">Düzenle</a>
+                                                                                        <a href="#" class="btn btn-sm btn-danger deleteColor" data-id="${row.guid}">Sil</a>
+                                                                                    `;
+                        }
                     }
+                ]
+            });
+
+            $('#btnAdd').click(function () {
+                $('#modalTitle').text('Yeni Renk Ekle');
+                $('#btnSave').text('Ekle');
+                $('#colorId').val("");
+                $('#modal').modal('show');
+            });
+
+            $('#tblColor').on('click', '.editColor', function () {
+                var id = $(this).data('id');
+                $.ajax({
+                    url: "/Admin/Color/GetById/" + id,
+                    success: function (res) {
+                        $('#colorName').val(res.name);
+                        $('#colorHex').val(res.hex);
+                        $('#colorId').val(res.id); // Ensure you are using the correct property
+                    },
+                    error: function () {
+                        Swal.fire('Hata', 'Renk verisi yüklenirken bir sorun oluştu.', 'error');
+                    }
+                });
+                $('#modalTitle').text('Renk Düzenle');
+                $('#btnSave').text('Güncelle');
+                $('#modal').modal('show');
+            });
+
+            $('#tblColor').on('click', '.deleteColor', function () {
+                var id = $(this).data('id');
+                Swal.fire({
+                    title: 'Emin misiniz?',
+                    text: "Bu renk kalıcı olarak silinecek!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Evet, sil!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: "DELETE",
+                            url: "/Admin/Color/Delete/" + id,
+                            success: function () {
+                                table.ajax.reload();
+                                Swal.fire('Silindi!', 'Renk başarıyla silindi.', 'success');
+                            },
+                            error: function () {
+                                Swal.fire('Hata', 'Renk silinirken bir sorun oluştu.', 'error');
+                            }
+                        });
+                    }
+                });
+            });
+
+            $('#btnSave').click(function () {
+                var color = {
+
+                    name: $('#colorName').val(),
+                    hex: $('#colorHex').val(), id: $('#colorId').val()
+                };
+
+                var url = $('#btnSave').text() === 'Ekle' ? '/Admin/Color/Add' : '/Admin/Color/Update';
+                var method = $('#btnSave').text() === 'Ekle' ? method : 'PUT';
+
+                console.log('Renk Verisi:', color);
+                console.log('Kullanılan URL:', url);
+                console.log('HTTP Yöntemi:', method);
+
+                $.ajax({
+                    type: method,
+                    url: url,
+                    data: JSON.stringify(color),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (response) {
+                        $('#modal').modal('hide');
+                        table.ajax.reload();
+                        Swal.fire('Başarılı!', 'Renk başarıyla kaydedildi.', 'success');
+                        console.log('Başarı Yanıtı:', response);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error('Hata:', textStatus, errorThrown);
+                        console.error('Yanıt İçeriği:', jqXHR.responseText);
+                        Swal.fire('Hata', 'Renk kaydedilirken bir sorun oluştu. Detaylar: ' + errorThrown, 'error');
+                    }
+                });
+            });
+
+        });
+
+
+
+    </script>
+}
